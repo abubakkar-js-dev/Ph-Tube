@@ -10,8 +10,8 @@
 </head>
 <body>
     <header>
-        <nav class="w-11/12 mx-auto flex justify-between items-center py-3">
-            <div class="logo">
+        <nav class="w-11/12 mx-auto flex justify-between items-center py-3 border-b">
+            <div class="logo w-[220px]">
                 <img src="./assets/Logo.png" alt="">
             </div>
             <div class="search">
@@ -33,12 +33,19 @@
                 <button class="btn">SHORT</button>
             </div>
         </nav>
+        <nav id="categories" class="flex justify-center gap-5 py-4">
+            <button class="btn bg-red-400 text-white">All</button>
+        </nav>
     </header>
     <main>
+        <section id="videos" class="w-11/12 mx-auto grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-5 py-10">
 
+        </section>
     </main>
     <footer>
 
     </footer>
+
+    <script src="./scripts/video.js"></script>
 </body>
 </html>
