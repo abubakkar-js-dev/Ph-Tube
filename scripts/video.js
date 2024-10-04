@@ -58,9 +58,9 @@ const loadCategoryVideos = (id) =>{
 
 
 // create load videos function
-const loadvideos = () => {
+const loadvideos = (searchText = "") => {
     // fetch videos
-    fetch('https://openapi.programming-hero.com/api/phero-tube/videos')
+    fetch(`https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`)
     .then(res => res.json())
     .then(data => displayVideos(data.videos))
     .catch(err => console.log(err))
@@ -148,6 +148,10 @@ const displayVideos = (videos) =>{
 
 loadCategories();
 loadvideos();
+
+document.getElementById('input-search').addEventListener('keyup',(event)=>{
+    loadvideos(event.target.value);
+})
 
 // reload when all video want to display
 
