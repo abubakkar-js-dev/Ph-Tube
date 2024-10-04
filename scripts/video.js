@@ -1,3 +1,4 @@
+const allVideosBtn = document.getElementById('btn-all-videos');
 // 1. Fetch, Load and show categories on html
 
 // create loadCategories function
@@ -20,7 +21,9 @@ const displayCategories = (categories) =>{
         const button = document.createElement('button');
         button.innerText = item.category;
         button.classList.add('btn');
-
+        button.setAttribute('id',`btn-${item.category_id}`);
+        button.classList.add('btn-category')
+        console.log(button);
         button.addEventListener('click',()=>{
             loadCategoryVideos(item.category_id);
         });
@@ -30,10 +33,26 @@ const displayCategories = (categories) =>{
     });
 }
 
+// remove btn collor function
+
+const removeActiveBtnColor = () =>{
+    allVideosBtn.classList.remove('bg-red-400','text-white')
+    const buttons = document.getElementsByClassName('btn-category');
+    for(let btn of buttons){
+        btn.classList.remove('bg-red-400','text-white');
+    }
+}
+
 const loadCategoryVideos = (id) =>{
     fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
     .then(res => res.json())
-    .then(data =>   displayVideos(data.category))
+    .then(data =>   {
+        // remove the active color of btn
+        removeActiveBtnColor();
+        const activeBtn = document.getElementById(`btn-${id}`);
+        activeBtn.classList.add('bg-red-400','text-white');
+        displayVideos(data.category);
+    })
     .catch(err => console.log(err));
 }
 
@@ -83,7 +102,7 @@ const displayVideos = (videos) =>{
     videoContainer.innerHTML = "";
     
     if(videos.length == 0){
-        videoContainer.classList = "w-11/12 mx-auto flex justify-center items-center"
+        videoContainer.classList.remove('grid');
         videoContainer.innerHTML = `
             <div class="flex flex-col justify-center gap-5 items-center mt-[100px]">
                 <img class="w-[200px]" src="../assets/Icon.png"/>
@@ -132,7 +151,7 @@ loadvideos();
 
 // reload when all video want to display
 
-const allVideos = document.getElementById('all-videos');
-allVideos.addEventListener('click',() =>{
+
+allVideosBtn.addEventListener('click',() =>{
     window.location.reload();
 })
