@@ -1,14 +1,42 @@
 // 1. Fetch, Load and show categories on html
 
 // create loadCategories function
-const  loadCategories = () =>{
+const  loadCategories = (load) =>{
     //fetch the data
-    fetch('https://openapi.programming-hero.com/api/phero-tube/categories')
+    fetch('https://openapi.programming-hero.com/api/phero-tube/categories/')
     .then(res => res.json())
     .then(data => displayCategories(data.categories))
     .catch(err => console.log(err));
 
 }
+
+// create displayCategories function
+
+const displayCategories = (categories) =>{
+    const categoryContainer = document.getElementById('categories');
+    categories.forEach(item => {
+
+        // creat a button
+        const button = document.createElement('button');
+        button.innerText = item.category;
+        button.classList.add('btn');
+
+        button.addEventListener('click',()=>{
+            loadCategoryVideos(item.category_id);
+        });
+        // append the button to category container
+        categoryContainer.appendChild(button);
+
+    });
+}
+
+const loadCategoryVideos = (id) =>{
+    fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    .then(res => res.json())
+    .then(data =>   displayVideos(data.category))
+    .catch(err => console.log(err));
+}
+
 
 // create load videos function
 const loadvideos = () => {
@@ -38,10 +66,36 @@ const cardDemo = {
     "description": "'Inside Amy Schumer' is a comedy show by the popular comedian Amy Schumer, blending sharp satire and unfiltered humor to tackle everyday issues and societal norms. With 3.6K views, the show promises a blend of hilarious sketches, thought-provoking stand-up, and candid interviews. It's a must-watch for fans of bold, edgy comedy."
 }
 
+const setTimeString =(time) => {
+    const hours = parseInt(time / 3600);
+    let remainingSecond = time % 3600;
+    const miniute = parseInt(remainingSecond / 60);
+    remainingSecond = remainingSecond % 60;
+    
+
+    return `${hours} hours ${miniute} min ${remainingSecond} sec ago`
+}
+
+
 const displayVideos = (videos) =>{
-    const cardContainer = document.getElementById('videos')
+
+    const videoContainer = document.getElementById('videos');
+    videoContainer.innerHTML = "";
+    
+    if(videos.length == 0){
+        videoContainer.classList = "w-11/12 mx-auto flex justify-center items-center"
+        videoContainer.innerHTML = `
+            <div class="flex flex-col justify-center gap-5 items-center mt-[100px]">
+                <img class="w-[200px]" src="../assets/Icon.png"/>
+                <h2 class="text-center text-2xl font-bold">Oops!! Sorry, There is no <br/> content here</h2>
+            </div>
+        `;
+    }else{
+        videoContainer.classList.add('grid');
+    }
+
     videos.forEach((video) =>{
-        console.log(video)
+        // console.log(video);
         const card = document.createElement('div');
         card.classList = "card card-compact";
         card.innerHTML = `
@@ -50,7 +104,9 @@ const displayVideos = (videos) =>{
           src=${video.thumbnail}
           class="h-full w-full object-cover"
           alt="Shoes"/>
-          <span class="absolute bg-black text-white text-xs rounded-md p-2 bottom-3 right-3">${video.others.posted_date}</span>
+         ${video.others.posted_date.length == 0 ? `<span class="absolute bg-black text-white text-xs rounded-md p-2 bottom-3 right-3">a few min ago</span>` :
+            ` <span class="absolute bg-black text-white text-xs rounded-md p-2 bottom-3 right-3">${setTimeString(video.others.posted_date)}</span>`
+         }
       </figure>
       <div class="px-0 py-2 flex gap-3">
         <div>
@@ -66,28 +122,17 @@ const displayVideos = (videos) =>{
         </div>
       </div>
         `;
-        cardContainer.appendChild(card);
+        videoContainer.appendChild(card);
     })
 }
 
 
-
-// create displayCategories function
-
-const displayCategories = (categories) =>{
-    const categoryContainer = document.getElementById('categories');
-    categories.forEach(item => {
-
-        // creat a button
-        const button = document.createElement('button');
-        button.innerText = item.category;
-        button.classList.add('btn');
-
-        // append the button to category container
-        categoryContainer.appendChild(button);
-
-    });
-}
-
 loadCategories();
 loadvideos();
+
+// reload when all video want to display
+
+const allVideos = document.getElementById('all-videos');
+allVideos.addEventListener('click',() =>{
+    window.location.reload();
+})
